@@ -1,0 +1,9 @@
+<%- include("../layout/head", {title: title}) %>
+<%- include("../layout/header") %>
+<div class="container">
+  <div class="jumbotron">
+    <h1 class="display-4"><%= title %> "<%= book.title %>"</h1>
+  </div>
+  <%- include("card", { book: book, simple: false }) %>
+</div>
+<%- include("../layout/footer") %>

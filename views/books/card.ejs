@@ -1,0 +1,41 @@
+<%- include("../layout/head", {title: title}) %>
+
+
+<div class="card" style="width: 18rem; margin-bottom: 16px">
+  <% if(book.fileCover) { %>
+    <img src="<%= book.fileCover %>" class="card-img-top" alt="<%= title %>" height="300px" style="object-fit: cover;">
+  <% } %>
+  <div class="card-body">
+    <% if(!simple) { %>
+      <div class="card-body row">
+        <a href="/books/update/<%= book.id %>" class="btn btn-primary">
+          <i class="fa fa-pencil" aria-hidden="true"></i>
+        </a>
+        <form action="/books/delete/<%= book.id %>" method="POST">
+          <button type="submit" class="btn btn-danger" aria-label="Удалить">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+          </button>
+        </form>
+      </div>
+    <% } %>
+    <% if(simple) { %>
+      <h5 class="card-title">
+        <a href="books/<%= book.id %>"><%= book.title %></a>
+    <% }else { %>
+      <h5 class="card-title"><%= book.title %></h5>
+    <% } %>
+
+    <% if(book.authors) { %>
+      <h6 class="card-subtitle mb-2 text-muted"><%= book.authors %></h6>
+    <% } %>
+
+    <% if(book.description) { %>
+      <p class="card-text"><%= book.description %></p>
+    <% } %>
+
+    <% if(book.fileBook && book.fileName && !simple) { %>
+      <a href="<%= book.fileBook %>" target="_blank" class="btn btn-primary">Скачать <%= book.fileName %></a>
+    <% } %>
+  </div>
+</div>
+<%- include("../layout/footer") %>

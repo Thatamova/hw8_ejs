@@ -1,0 +1,83 @@
+<%- include("../layout/head", {title: title}) %>
+
+<div class="container">
+  <form method="POST">
+    <div class="form-group">
+      <label for="title">Заголовок</label>
+      <input
+        type="text"
+        class="form-control"
+        id="title"
+        name="title"
+        value="<%= book.title %>"
+      >
+    </div>
+    <div class="form-group">
+      <label for="description">Описание</label>
+      <input
+        type="text"
+        class="form-control"
+        id="description"
+        name="description"
+        value="<%= book.description %>"
+      >
+    </div>
+    <div class="form-group">
+      <label for="authors">Автор</label>
+      <input
+        type="text"
+        class="form-control"
+        id="authors"
+        name="authors"
+        value="<%= book.authors %>"
+      >
+    </div>
+    <div class="form-group">
+      <label for="favorite">favorite</label>
+      <input
+        type="text"
+        class="form-control"
+        id="favorite"
+        name="favorite"
+        value="<%= book.favorite %>"
+      >
+    </div>
+    <div class="form-group">
+      <label for="fileCover">Обложка</label>
+      <input
+        type="text"
+        class="form-control"
+        id="fileCover"
+        name="fileCover"
+        value="<%= book.fileCover %>"
+      >
+    </div>
+    <div class="form-group">
+      <label for="fileName">Имя файла</label>
+      <input
+        type="text"
+        class="form-control"
+        id="fileName"
+        name="fileName"
+        value="<%= book.fileName %>"
+      >
+    </div>
+    <div class="form-group">
+      <label for="fileBook">Ссылка</label>
+      <input
+        type="text"
+        class="form-control"
+        id="fileBook"
+        name="fileBook"
+        value="<%= book.fileBook %>"
+      >
+    </div>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+    <% if(book.id) { %>
+      <a href="/books/<%= book.id %>" class="btn btn-secondary">Отмена</a>
+    <% }else { %>
+      <a href="/books" class="btn btn-secondary">Отмена</a>
+    <% } %>
+  </form>
+</div>
+<%- include("../layout/footer") %>

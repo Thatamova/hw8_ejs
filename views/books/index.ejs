@@ -1,0 +1,23 @@
+<%- include("../layout/head", {title: title}) %>
+<%- include("../layout/header") %>
+<div class="container">
+  <div class="jumbotron">
+    <h1 class="display-4"><%= title %></h1>
+    <hr class="my-4">
+    <a class="btn btn-primary" href="books/create" role="button">Добавить книгу</a>
+  </div>
+  
+  <% if(books.length) { %>
+    <div class="row">
+      <% books.map((book, index) => { %>
+        <div class="col-4">
+          <%- include("card", { book: books[index], simple: true }) %>
+        </div>
+      <% }); %>
+    </div>
+  <% }else { %>
+    <h5 class="mt-5">Список пуст</h5>
+  <% } %>
+
+</div>
+<%- include("../layout/footer") %>
