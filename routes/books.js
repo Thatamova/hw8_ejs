@@ -1,26 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const {Book} = require('../models');
+const Book = require('../models/book');
 
-const books = [];
 
-[1, 2].map(el => {
-  const newBook = new Book(
-    `Мертвые души ${el}`,
-    `«Мертвые души» – уникальный роман, ставший для русской литературы своеобразным эталоном иронической прозы. ${el}`,
-    `Николай Гоголь ${el}`,
-    '',
-    'https://cv6.litres.ru/pub/c/elektronnaya-kniga/cover_330/171960-nikolay-gogol-mertvye-dushi-171960.jpg',
-    `Мертвые души ${el}`,
-    'https://www.litres.ru/nikolay-gogol/mertvye-dushi-171960/'
-  );
-  books.push(newBook);
-});
+router.get('/', async (req, res) => {
+  const books = await Book.find();
 
-router.get('/', (req, res) => {
   res.render("books/index", {
-      title: "Список книг",
-      books: books,
+    title: "Список книг",
+    books: books,
   });
 });
 
@@ -31,7 +19,7 @@ router.get('/create', (req, res) => {
   });
 });
 
-router.post('/create', (req, res) => {
+router.post('/create', async (req, res) => {
   const {
     title,
     description,
@@ -39,57 +27,67 @@ router.post('/create', (req, res) => {
     favorite,
     fileCover,
     fileName,
-    fileBook
   } = req.body;
 
-  const book = new Book(title, description, authors, favorite, fileCover, fileName, fileBook);
-  books.push(book);
+  const book = new Book({ title, description, authors, favorite, fileCover, fileName });
 
-  res.redirect('/books')
-});
-
-
-router.get('/:id', (req, res) => {
-  const {id} = req.params;
-  const book = books.find(book => book.id === id);
-
-  if (book) {
-    res.render("books/view", {
-      title: "Книга",
-      book: book,
-    });
-  } else {
-    res.status(404).redirect('/404');
+  try {
+    await book.save();
+    res.redirect('/books')
+  } catch (e) {
+    console.error(e);
   }
 });
 
-router.post('/delete/:id', (req, res) => {
-  const {id} = req.params;
-  const bookIndex = books.findIndex(book => book.id === id);
 
-  if (bookIndex !== -1) {
-    books.splice(bookIndex, 1);
-    res.redirect(`/books`);
-  } else {
+router.get('/:id', async (req, res) => {
+  const {id} = req.params;
+  let book = {};
+
+  try {
+    book = await Book.findById(id);
+  } catch (e) {
+    console.error(e);
     res.status(404).redirect('/404');
   }
+
+  res.render("books/view", {
+    title: "Книга",
+    book: book,
+  });
 });
 
-router.get('/update/:id', (req, res) => {
+router.post('/delete/:id', async (req, res) => {
   const {id} = req.params;
-  const bookIndex = books.findIndex(book => book.id === id);
 
-  if (bookIndex !== -1) {
-    res.render("books/update", {
-      title: "Редактировать",
-      book: books[bookIndex],
-    });
-  } else {
+  try {
+    await Book.deleteOne({_id: id});
+  } catch (e) {
+    console.error(e);
     res.status(404).redirect('/404');
   }
+
+  res.redirect(`/books`);
 });
 
-router.post('/update/:id', (req, res) => {
+router.get('/update/:id', async (req, res) => {
+  const {id} = req.params;
+  let book = {};
+
+  try {
+    book = await Book.findById(id);
+  } catch (e) {
+    console.error(e);
+    res.status(404).redirect('/404');
+  }
+
+  res.render("books/update", {
+    title: "Редактировать",
+    book: book,
+  });
+});
+
+router.post('/update/:id', async (req, res) => {
   const {id} = req.params;
   const {
     title,
@@ -97,26 +95,24 @@ router.post('/update/:id', (req, res) => {
     authors,
     favorite,
     fileCover,
-    fileName,
-    fileBook
+    fileName
   } = req.body;
-  const bookIndex = books.findIndex(book => book.id === id);
 
-  if (bookIndex !== -1) {
-    books[bookIndex] = {
-      ...books[bookIndex],
+  try {
+    await Book.findByIdAndUpdate(id, {
       title,
       description,
       authors,
       favorite,
       fileCover,
       fileName,
-      fileBook
-    };
-    res.redirect(`/books/${id}`);
-  } else {
+    });
+  } catch (e) {
+    console.error(e);
     res.status(404).redirect('/404');
   }
+
+  res.redirect(`/books/${id}`);
 });
 
 module.exports = router;

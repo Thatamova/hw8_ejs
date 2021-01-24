@@ -7,10 +7,4 @@ router.get('/', (req, res) => {
   });
 });
 
-router.get('/404', (req, res) => {
-  res.render("layout/404", {
-    title: "Такой страницы не существует",
-  });
-});
-
 module.exports = router;
